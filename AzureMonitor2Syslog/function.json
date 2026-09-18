@@ -4,8 +4,9 @@
       "type": "eventHubTrigger",
       "name": "myEventHubMessage",
       "connection": "logging01_RootManageSharedAccessKey_EVENTHUB",
-      "eventHubName": "logs",
+      "eventHubName": "diag-hub",
       "consumerGroup": "$Default",
+      "cardinality": "many",
       "direction": "in"
     }
   ]
