@@ -1,0 +1,38 @@
+name: Deploy AzureMonitor2Syslog to Azure Functions
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  AZURE_FUNCTIONAPP_NAME: function-test-syslog
+  PACKAGE_DIRECTORY: '.'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify deployment files
+        shell: bash
+        run: |
+          pwd
+          find . -maxdepth 3 -type f | sort
+
+          test -f host.json
+          test -f AzureMonitor2Syslog/function.json
+          test -f AzureMonitor2Syslog/index.js
+          test -f node_modules/syslog-client/package.json
+
+      - name: Deploy to Azure Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          slot-name: Production
+          package: ${{ env.PACKAGE_DIRECTORY }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
